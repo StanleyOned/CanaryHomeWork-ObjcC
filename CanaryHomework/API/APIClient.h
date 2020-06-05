@@ -6,8 +6,19 @@
 //  Copyright © 2019 Michael Schroeder. All rights reserved.
 //
 
-#ifndef ApiClient_h
-#define ApiClient_h
+#import "AFHTTPSessionManager.h"
 
+typedef void(^APIClientCompletionBlock)(BOOL success, id responseObject);
+typedef void(^APIClientOperationSuccessBlock)(NSURLSessionDataTask *task, id responseObject);
+typedef void(^APIClientOperationFailureBlock)(NSURLSessionDataTask *task, NSError *error);
 
-#endif /* ApiClient_h */
+@interface APIClient : NSObject
+
++(APIClient *)sharedClient;
+
+#pragma mark - Devices
+-(void)getDeviceWithCompletionBlock:(APIClientCompletionBlock)completionBlock;
+
+-(void)getDevice:(NSString *) deviceId readingsWithCompletionBlock:(APIClientCompletionBlock)completionBlock;
+
+@end

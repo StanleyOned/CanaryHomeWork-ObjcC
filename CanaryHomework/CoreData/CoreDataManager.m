@@ -7,9 +7,6 @@
 //
 
 #import "CoreDataManager.h"
-#import "CYAPIClientNotifications.h"
-
-NSString *CoreDataManagerPSCException = @"CoreDataManagerPSCException";
 
 @interface CoreDataManager ()
 
@@ -52,7 +49,7 @@ NSString *CoreDataManagerPSCException = @"CoreDataManagerPSCException";
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^
     {
-        defaultManager = [self managerForModelName:@"Canary_V4"];
+        defaultManager = [self managerForModelName:@"CanaryHomework"];
     });
     return defaultManager;
 }
@@ -140,22 +137,6 @@ NSString *CoreDataManagerPSCException = @"CoreDataManagerPSCException";
     NSString *persistentStoreFileName = [NSString stringWithFormat:@"%@.sqlite", self.databaseName];
     
     NSURL *newStoreURL;
-#if defined(APP_GROUP) && defined(CYMainApplication)
-    newStoreURL = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:APP_GROUP];
-    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomTV) {
-        newStoreURL = [newStoreURL URLByAppendingPathComponent:@"Library" isDirectory:YES];
-        newStoreURL = [newStoreURL URLByAppendingPathComponent:@"Caches" isDirectory:YES];
-    }
-    newStoreURL = [newStoreURL URLByAppendingPathComponent:persistentStoreFileName];
-    if ( newStoreURL != nil )
-    {
-        if ( ![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:newStoreURL options:options error:&error] )
-        {
-            shouldRestart = YES;
-            DDLogVerbose(@"Unresolved error %@, %@", error, [error userInfo]);
-        }
-    }
-#endif
     
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:persistentStoreFileName];
     if ( ![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error] )
@@ -167,10 +148,6 @@ NSString *CoreDataManagerPSCException = @"CoreDataManagerPSCException";
         //Delete the database completely
         [[NSFileManager defaultManager] removeItemAtURL:newStoreURL error:nil];
         [[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil];
-        
-        //Log the user out
-        [[NSNotificationCenter defaultCenter] postNotificationName:CYAPIClientForceLogoutNotification object:nil];
-        
         //Recreate the persistentStoreCoordinator from scratch
         return [self persistentStoreCoordinator];
     }
@@ -239,9 +216,6 @@ NSString *CoreDataManagerPSCException = @"CoreDataManagerPSCException";
 
 - (NSURL *)applicationDocumentsDirectory
 {
-#ifdef CYTVApplication
-    return [[[NSFileManager defaultManager] URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] lastObject];
-#endif
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 

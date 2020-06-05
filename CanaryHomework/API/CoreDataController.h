@@ -7,10 +7,22 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Device+Retrieval.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CoreDataController : UIViewController
+typedef void(^CoreDataControllerCompletionBlock)(BOOL completed, BOOL success, NSArray *objects);
+
+@interface CoreDataController : NSObject
+
+#pragma mark - Shared Cache
++ (CoreDataController *)sharedCache;
+
+#pragma mark - Device
+- (void)getAllDevices:(CoreDataControllerCompletionBlock)completionBlock;
+
+#pragma mark - Reading
+-(void)getReadingsForDevice:(NSString *)deviceID completionBlock:(CoreDataControllerCompletionBlock)completionBlock;
 
 @end
 

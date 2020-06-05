@@ -7,8 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
-extern NSString *CoreDataManagerPSCException;
+#import <CoreData/CoreData.h>
 
 @interface CoreDataManager : NSObject
 

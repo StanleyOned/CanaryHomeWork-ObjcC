@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (DateFormatter *) sharedFormatter;
 -(NSDate *) dateFromAPIString:(NSString *)dateString;
+-(NSString *) stringFromDate:(NSDate *)date;
 
 @end
 

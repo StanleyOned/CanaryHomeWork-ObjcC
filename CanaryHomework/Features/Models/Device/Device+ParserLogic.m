@@ -18,8 +18,10 @@
 + (Device *)deviceFromDictionary:(NSDictionary *)dictionary managedObjectContext:(NSManagedObjectContext *)managedObjectContext {
     Device *device = [self deviceWithID:dictionary[@"id"] managedObjectContext:managedObjectContext createIfNeeded:YES];
     device.name = dictionary[@"name"];
-    device.createAt = [[DateFormatter sharedFormatter] dateFromAPIString:dictionary[@"createAt"]];
-    device.updateAt = [[DateFormatter sharedFormatter] dateFromAPIString:dictionary[@"updateAt"]];
+    device.type = dictionary[@"type"];
+    device.value = dictionary[@"value"];
+    device.createAt = [[DateFormatter sharedFormatter] dateFromAPIString:dictionary[@"createdAt"]];
+    device.updateAt = [[DateFormatter sharedFormatter] dateFromAPIString:dictionary[@"updatedAt"]];
     return device;
 }
 

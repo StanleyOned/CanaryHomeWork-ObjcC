@@ -31,7 +31,7 @@
 
     if (self) {
         _dateFormatter = [[NSDateFormatter alloc] init];
-        _dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZ";
+        _dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSSZ";
     }
     return self;
 }
@@ -40,4 +40,10 @@
 - (NSDate *)dateFromAPIString:(NSString *)dateString {
     return [self.dateFormatter dateFromString:dateString];
 }
+
+- (NSString *)stringFromDate:(NSDate *)date {
+    self.dateFormatter.dateFormat = @"MMM d, h:mm a";
+    return [self.dateFormatter stringFromDate:date];
+}
+
 @end

@@ -6,14 +6,17 @@
 //  Copyright © 2019 Michael Schroeder. All rights reserved.
 //
 
+#import "CoreDataController.h"
 #import "DevicesViewController.h"
 #import "DetailViewController.h"
-#import "CoreDataController.h"
 #import "Device+CoreDataProperties.h"
+#import "DeviceCell.h"
+#import "Device+Retrieval.h"
 
 @interface DevicesViewController ()
 
 @property(nonatomic, retain) UITableView *tableView;
+@property(nonatomic, retain) UIActivityIndicatorView *indicator;
 @property(nonatomic, retain) NSArray<Device *> *devices;
 @property(nonatomic, retain) UILayoutGuide *safeArea;
 
@@ -27,12 +30,11 @@
     self.title = @"Devices";
     
     self.safeArea = self.view.layoutMarginsGuide;
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = [UIColor systemBackgroundColor];
+    self.indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.indicator];
     [self setupTableView];
-}
-
-- (void) retrieveDevices {
-    [[CoreDataController sharedCache] core]
+    [self fetchDevices];
 }
 
 - (void)setupTableView {
@@ -43,24 +45,32 @@
     [[self.tableView.leftAnchor constraintEqualToAnchor:self.view.leftAnchor] setActive:true];
     [[self.tableView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor] setActive:true];
     [[self.tableView.rightAnchor constraintEqualToAnchor:self.view.rightAnchor] setActive:true];
-    
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
+    self.tableView.tableFooterView = [UIView new];
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    [self.tableView registerClass:[DeviceCell class] forCellReuseIdentifier:[DeviceCell identifer]];
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
+}
+
+- (void)fetchDevices {
+    [self.indicator startAnimating];
     [[CoreDataController sharedCache] getAllDevices:^(BOOL completed, BOOL success, NSArray * _Nonnull objects) {
-        self.devices = objects;
-        [self.tableView reloadData];
+        [self.indicator stopAnimating];
+        if (success) {
+            self.devices = objects;
+            [self.tableView reloadData];
+        }
     }];
-    
 }
 
 #pragma mark - UITableView Data Source
 
 - (nonnull UITableViewCell *)tableView:(nonnull UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
-    UITableViewCell *cell  = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+    DeviceCell *cell  = [tableView dequeueReusableCellWithIdentifier:[DeviceCell identifer] forIndexPath:indexPath];
     Device *device = self.devices[indexPath.row];
-    cell.textLabel.text = device.name;
+    [cell configure: device];
+    
     return cell;
 }
 
@@ -68,10 +78,16 @@
     return self.devices.count;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return UITableViewAutomaticDimension;
+}
+
 #pragma mark UITableView Delegate 
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    DetailViewController *dc = [DetailViewController new];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    Device *device = self.devices[indexPath.row];
+    DetailViewController *dc = [[DetailViewController alloc] initWithDeviceID:device.deviceID];
     [self.navigationController pushViewController:dc animated:YES];
 }
 

@@ -17,6 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSFetchRequest<Device *> *)fetchRequest;
 
 @property (nullable, nonatomic, copy) NSString *name;
+@property (nullable, nonatomic, copy) NSString *type;
+@property (nullable, nonatomic, copy) NSString *value;
 @property (nullable, nonatomic, copy) NSDate *createAt;
 @property (nullable, nonatomic, copy) NSDate *updateAt;
 @property (nullable, nonatomic, copy) NSString *deviceID;
