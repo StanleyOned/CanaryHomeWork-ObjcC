@@ -28,14 +28,4 @@
     return device;
 }
 
-+ (NSArray<Device*> *)devicesFrom:(NSManagedObjectContext*)managedObjectContext {
-    NSFetchRequest *request = [Device fetchRequest];
-    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-    NSArray<Device*> *devices = [managedObjectContext executeFetchRequest:request error:NULL];
-    [devices sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
-
-    return devices;
-}
-
-
 @end

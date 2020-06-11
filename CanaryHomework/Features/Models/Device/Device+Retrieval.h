@@ -11,5 +11,4 @@
 @interface Device (Retrieval)
 
 + (Device *)deviceWithID:(NSString *)deviceID managedObjectContext:(NSManagedObjectContext *)managedObjectContext createIfNeeded:(BOOL)createIfNeeded;
-+ (NSArray<Device*> *)devicesFrom:(NSManagedObjectContext*)managedObjectContext;
 @end
